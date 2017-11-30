@@ -3,7 +3,7 @@
 class Dict{
 
   public function __construct(){
-    $this->lines = file("../setting/word/word_cn");
+    $this->lines = file(dirname(__FILE__)."/../setting/word/word_cn");
   }
 
 

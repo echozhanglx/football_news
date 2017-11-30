@@ -3,7 +3,7 @@
 class SerieA{
 
   public function accept(){
-    require_once '../dictionary/dict.php';
+    require_once dirname(__FILE__).'/../dictionary/dict.php';
     $this->dict = new Dict();
     $this->context = stream_context_create(array(
       'http' => array (
