@@ -13,12 +13,7 @@ class SerieA{
     ));
 
     $this->getStanding();
-    $next = $this->checkMatchDay();
-    if($next){
-      $this->getResult();
-    }else{
-      $this->result = $this->dict->getDict("no new match");
-    }
+    $this->getResult();
     return $this->Contents();
 
   }
@@ -44,24 +39,24 @@ class SerieA{
     $uri = 'http://api.football-data.org/v1/competitions/456/fixtures/?matchday='.$this->matchday;
     $response = file_get_contents($uri,false,$this->context);
     $fixtures = json_decode($response);
-    $this->result = "<tr><th>".$this->dict->getDict('Match Date')."</th><th>".$this->dict->getDict('Team')."</th><th>".$this->dict->getDict('Result')."</th></tr>";
+    $this->result = "<tr><th>".$this->dict->getDict('Match Date')."(".$this->dict->getDict('timezone').")</th><th>".$this->dict->getDict('Team')."</th><th>".$this->dict->getDict('Result')."</th></tr>";
     foreach ($fixtures->fixtures as $value){
       $this->result .= "<tr>";
-      $this->result .= "<td>".date("Y-m-d",strtotime($value->date))."</td>";
+      $this->result .= "<td>".date("Y-m-d H:i",strtotime("+8 hour",strtotime($value->date)))."</td>";
       $this->result .= "<td>".$this->dict->getDict($value->homeTeamName)." : ".$this->dict->getDict($value->awayTeamName)."</td>";
-      $this->result .= "<td>".$value->result->goalsHomeTeam.":".$value->result->goalsAwayTeam."</td>";
+      $this->result .=($value->status=="FINISHED")? "<td>".$value->result->goalsHomeTeam.":".$value->result->goalsAwayTeam."</td>":"<td>".$this->dict->getDict('not start')."</td>";
       $this->result .="</tr>";
     }
   }
 
+  //@unused
   private function checkMatchDay(){
     $before = file_get_contents("../setting/recorder/before");
     if ($before == $this->matchday){
       return false;
-    }else{
-      file_put_contents("../setting/recorder/before",$this->matchday);
-      return true;
     }
+    file_put_contents("../setting/recorder/before",$this->matchday);
+    return true;
   }
 
   private function Contents(){
@@ -71,9 +66,11 @@ class SerieA{
     <title>SerieA Result</title>
     </head>
     <body>
+    <p>".$this->dict->getDict('MatchDay').":".$this->matchday."</p>
     <table border=1>
     $this->result
     </table>
+    <p>".$this->dict->getDict('Standing')."</p>
     <table border=1>
     $this->table
     </table>
