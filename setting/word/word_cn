@@ -29,3 +29,9 @@ not start:未开赛
 MatchDay:轮次
 Standing:积分榜
 timezone:日本时间
+wins:胜
+draws:平
+losses:负
+goals:进球
+goalsAgainst:失球
+goalDifference:净胜球

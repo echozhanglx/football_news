@@ -16,8 +16,6 @@ class sendMail{
   private function tolist(){
     $list = [
       "334557725@qq.com",
-      "zhanglongx1104@hotmail.com",
-      "sunyuantao16@gmail.com"
     ];
     return $list;
   }
