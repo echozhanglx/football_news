@@ -11,11 +11,14 @@ class SerieA{
         'header' => 'X-Auth-Token: b3688b3cc0164b7e94425386dbe7c510'
       )
     ));
+    $this->getStanding($option);
     if($option=="html"){
-      $this->getStanding($option);
       return $this->table;
     }
-    $this->getStanding();
+    if($option=="match"){
+        $this->getResult($option);
+        return $this->result;
+    }
     $this->getResult();
     return $this->Contents();
 
@@ -46,11 +49,11 @@ class SerieA{
     }
   }
 
-  private function getResult(){
+  private function getResult($option){
     $uri = 'http://api.football-data.org/v1/competitions/456/fixtures/?matchday='.$this->matchday;
     $response = file_get_contents($uri,false,$this->context);
     $fixtures = json_decode($response);
-    $this->result = "<tr><th>".$this->dict->getDict('Match Date')."(".$this->dict->getDict('timezone').")</th><th>".$this->dict->getDict('Team')."</th><th>".$this->dict->getDict('Result')."</th></tr>";
+    $this->result =($option==NULL)? "<tr><th>".$this->dict->getDict('Match Date')."(".$this->dict->getDict('timezone').")</th><th>".$this->dict->getDict('Team')."</th><th>".$this->dict->getDict('Result')."</th></tr>":NULL;
     foreach ($fixtures->fixtures as $value){
       $this->result .= "<tr>";
       $this->result .= "<td>".date("Y-m-d H:i",strtotime("+9 hour",strtotime($value->date)))."</td>";
