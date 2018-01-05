@@ -7,7 +7,7 @@ require_once dirname(__FILE__).'/../SerieA/SerieANews.php';
 require_once dirname(__FILE__).'/../mail/sendmail.php';
 
 $serieA = new SerieA();
-$serieA_result = $serieA->accept();
+$serieA_result = $serieA->accept(NULL);
 
 $sendMail = new sendMail($serieA_result,"SerieA Result");
 $sendMail->send();

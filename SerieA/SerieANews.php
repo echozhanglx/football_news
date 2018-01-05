@@ -2,7 +2,7 @@
 
 class SerieA{
 
-  public function accept(){
+  public function accept($option){
     require_once dirname(__FILE__).'/../dictionary/dict.php';
     $this->dict = new Dict();
     $this->context = stream_context_create(array(
@@ -11,7 +11,10 @@ class SerieA{
         'header' => 'X-Auth-Token: b3688b3cc0164b7e94425386dbe7c510'
       )
     ));
-
+    if($option=="html"){
+      $this->getStanding($option);
+      return $this->table;
+    }
     $this->getStanding();
     $this->getResult();
     return $this->Contents();
@@ -19,14 +22,14 @@ class SerieA{
   }
 
 
-  private function getStanding(){
+  private function getStanding($option){
     $uri = 'http://api.football-data.org/v1/competitions/456/leagueTable';
     $response = file_get_contents($uri,false,$this->context);
     $fixtures = json_decode($response);
     $this->matchday = $fixtures->matchday;
-    $this->table ="<tr><th>".$this->dict->getDict('position')."</th><th>".$this->dict->getDict('team')."</th><th>".$this->dict->getDict('playedGames')."</th><th>".$this->dict->getDict('points')."</th><th>".
+    $this->table =($option!="html")?"<tr><th>".$this->dict->getDict('position')."</th><th>".$this->dict->getDict('team')."</th><th>".$this->dict->getDict('playedGames')."</th><th>".$this->dict->getDict('points')."</th><th>".
     $this->dict->getDict('wins')."</th><th>".$this->dict->getDict('draws')."</th><th>".$this->dict->getDict('losses')."</th><th>".$this->dict->getDict('goals')."</th><th>".$this->dict->getDict('goalsAgainst')."</th><th>".$this->dict->getDict('goalDifference')."</th>"
-    ."</tr>";
+    ."</tr>":"";
     foreach($fixtures->standing as $value){
       $this->table .= "<tr>";
       $this->table .= "<td>".$value->position."</td>";
